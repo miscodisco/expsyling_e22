@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
 
-<title>t_tests_clean</title>
+<title>Lab09_anova_clean</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13082,7 +13082,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Let's-get-coding">Let's get coding<a class="anchor-link" href="#Let's-get-coding">&#182;</a></h1>
+<h1 id="ANOVA">ANOVA<a class="anchor-link" href="#ANOVA">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13092,11 +13092,10 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pip</span> install pandas
-<span class="o">%</span><span class="k">pip</span> install numpy
-<span class="o">%</span><span class="k">pip</span> install seaborn
 <span class="o">%</span><span class="k">pip</span> install pingouin
-<span class="o">%</span><span class="k">pip</span> install statistics
+<span class="o">%</span><span class="k">pip</span> install seaborn
 <span class="o">%</span><span class="k">pip</span> install matplotlib
+<span class="o">%</span><span class="k">pip</span> install warnings
 </pre></div>
 
     </div>
@@ -13106,18 +13105,16 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># packages</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pingouin</span> <span class="k">as</span> <span class="nn">pg</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="kn">import</span> <span class="nn">pingouin</span> <span class="k">as</span> <span class="nn">pg</span> 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">statistics</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ttest_rel</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13128,11 +13125,9 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote><p>With a mean grade of 72.3, the psychology students scored slightly higher than the average grade of 67.5 (𝑡(19)=2.25, 𝑝&lt;.05)</p>
-</blockquote>
-<p>or</p>
-<blockquote><p>Grades were significantly higher for psychology students <strong>(mean = 72.3)</strong> than the average student <strong>(mean = 67.5) (t(19) = 2.25, p &lt; 0.05)</strong></p>
-</blockquote>
+<p>A glass of beer with the head having receded, leaving behind noticeable lacing</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Mai_2012_Weißbier.JPG/1920px-Mai_2012_Weißbier.JPG" width="200"/></p>
+<p>Image credit: Mai Weißbier, 2012</p>
 
 </div>
 </div>
@@ -13140,17 +13135,62 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dataset-1:-Moon-and-aggression">Dataset 1: Moon and aggression<a class="anchor-link" href="#Dataset-1:-Moon-and-aggression">&#182;</a></h2>
+<h2 id="Beer-Head-Retention">Beer Head Retention<a class="anchor-link" href="#Beer-Head-Retention">&#182;</a></h2><p>There's nothing like a good foamy head on a cold beer, but <a href="https://en.wikipedia.org/wiki/Beer_head">it needs to be just right</a>: not too much, not too little. That means there is a financial incentive for brewers to get the foam just right every time, and that means: science! Below, you can read the abstract from a study by Ault et al (1967), who devised a means to measure beer head retention (how much foam there is, how long it lasts, and how much it sticks to the glass) in a way that would as closely as possible mimic the consumer's experience.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Beer%20Head%20Retention/image_abstract.png?raw=true" width="500"/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below, you can see a schematic drawing of the device used for measuring beer head retention.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Beer%20Head%20Retention/image_head_retention_apparatus.png?raw=true" width="400"/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ault et al (1967) measured <a href="https://en.wikipedia.org/wiki/99_Bottles_of_Beer">sixty bottles of beer</a> from three different bottlings:</p>
+<ol>
+<li>Bottling: the batch of beers bottled at the same time</li>
+<li>Bottle: the bottle id number for each bottling</li>
+<li>Head_Formation: the distance from the top of the glass to the top of the foam after 5 seconds plus the distance from the previous top of the foam to the top of the foam after 30 seconds (see Ault et al, 1967, for details)</li>
+<li>Percent_Adhesion: The amount of "lacing", that is, foam stuck to the glass after the foam collapses</li>
+<li>Percent_Collapse: Essentially, how much foam is left after 240 seconds.</li>
+</ol>
+<p>Assignment:</p>
+<ol>
+<li>Compare the different bottling batches on each of the three outcome measures: Head_Formation, Percent_Adhesion, and Percent_Collapse, and report your results in APA format. Using the names from <code>pingouin</code> output, this could be "A one-way ANOVA showed a significant effect of / no significant effect of SOURCE on DV (F(DDOF1, DDOF2) = F, p = p".</li>
+<li>Make figures illustrating your results</li>
+<li>If you drink beer, based on your own preferences, which bottling had the best balance of formation, adhesion, and collapse?</li>
+</ol>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/JASP_data_library/2.%20T-Tests/Moon</span><span class="si">%20a</span><span class="s1">nd%20Aggression.csv&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/Beer%20Head%20Retention/beer-head-data.csv&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13160,52 +13200,100 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># defining group 1 and 2</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># performing the appropriate t-test</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Bottling</th>
+      <th>Bottle</th>
+      <th>Head_Formation</th>
+      <th>Percent_Adhesion</th>
+      <th>Percent_Collapse</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>166</td>
+      <td>74</td>
+      <td>87</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>2</td>
+      <td>180</td>
+      <td>78</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>3</td>
+      <td>164</td>
+      <td>67</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>4</td>
+      <td>180</td>
+      <td>71</td>
+      <td>82</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>5</td>
+      <td>173</td>
+      <td>65</td>
+      <td>82</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># reporting the results</span>
-</pre></div>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plotting the results</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 
@@ -13213,18 +13301,75 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dataset-2:-Eye-movements-and-word-recall">Dataset 2: Eye movements and word recall<a class="anchor-link" href="#Dataset-2:-Eye-movements-and-word-recall">&#182;</a></h2>
+<h2 id="Barking-sea-lions">Barking sea lions<a class="anchor-link" href="#Barking-sea-lions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>California sea lion (Zalophus californianus) and a Western gull (Larus occidentalis) in Scripps Park in La Jolla (San Diego, California).</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/California_sea_lion_in_La_Jolla_%2870568%29.jpg/2560px-California_sea_lion_in_La_Jolla_%2870568%29.jpg" width="300"/></p>
+<p>Image credit: Rhododendrites (2016)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Sea lions love to make noise, and in the sea lion business, the noise they make is called "barking". To the untrained ear, all sea lions may sound the same, but in fact, there may be local "dialects". Ahonen et al (2014) carried out a study of sea lion barks, measuring, among other things, the duration of the barks at seven different locations in Australia (see map below).</p>
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Durations%20of%20Seal%20Lion%20Barking%20Calls/image_locations.png?raw=true" width="550"/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below, you can read the article abstract:</p>
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Durations%20of%20Seal%20Lion%20Barking%20Calls/image_abstract.png?raw=true" width=""/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Assignment:</p>
+<ol>
+<li>Use the dataset below to check the researchers' results. Was there a signficant difference in barking duration between the different locations?</li>
+<li>Report your findings using the APA format (see beer example above)</li>
+<li>Reproduce panel A from figure 4, below. Sadly, we don't have the data for the interbark durations, so you can't do panel B. You can use the location numbers, but for an extra challenge, use Python to replace the numbers with the location names. You can see the location names in table 2 below, which are ordered in the same order as the location numbers in the data:</li>
+</ol>
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Durations%20of%20Seal%20Lion%20Barking%20Calls/image_table2.png?raw=true" width=""/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://github.com/ethanweed/datasets-for-teaching/blob/main/Durations%20of%20Seal%20Lion%20Barking%20Calls/image_figure4.png?raw=true" width=""/></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><p>Ahonen, H., Stow, A. J., Harcourt, R. G., &amp; Charrier, I. (2014). Adult male Australian sea lion barking calls reveal clear geographical variations. Animal Behaviour, 97, 229-239.</p>
+<p>Ault, R. G., Hudson, E. J., Linehan, D. J., &amp; Woodward, J. D. (1967). A practical approach to the assessment of head retention of bottled beers. Journal of the Institute of Brewing, 73(6), 558-566.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/JASP_data_library/2.%20T-Tests/Eye%20Movements.csv&#39;</span><span class="p">)</span>
-
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/Durations</span><span class="si">%20o</span><span class="s1">f%20Seal</span><span class="si">%20Li</span><span class="s1">on%20Barking%20Calls/sea-lion-barking-data.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13232,43 +13377,94 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dataset-3:-Jeans">Dataset 3: Jeans<a class="anchor-link" href="#Dataset-3:-Jeans">&#182;</a></h2>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/university_of_florida/bluejeans_laser.csv&#39;</span><span class="p">)</span>
-
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>location</th>
+      <th>duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>51.05</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>54.58</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>52.34</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>50.24</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>53.25</td>
+    </tr>
+  </tbody>
+</table>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Dataset-4:-Crime-in-the-USA">Dataset 4: Crime in the USA<a class="anchor-link" href="#Dataset-4:-Crime-in-the-USA">&#182;</a></h2>
+</div>
+
+</div>
+
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/ethanweed/datasets-for-teaching/main/sheffield_MASH/crime.csv&#39;</span><span class="p">)</span>
-
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
